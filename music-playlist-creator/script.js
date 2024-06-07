@@ -57,8 +57,10 @@ function displayLikes(playlist) {
 
 function onAddSongClick(playlist) {
     return (e) => {
-        console.log(e);
         e.preventDefault();
+        writeEditedPlaylistData(e, playlist.playlistID);
+        populateEditModal(playlist)
+        console.log(playlist);
 
         let songEditList = document.getElementById("song-edit-list");
         songEditList.innerHTML += `
@@ -71,8 +73,6 @@ function onAddSongClick(playlist) {
         </li>
         <br/>
     `
-        // writeEditedPlaylistData(e, playlist.playlistID);
-        // populateEditModal(playlist)
     }
 }
 
@@ -113,10 +113,10 @@ function populateEditModal(playlist) {
     formData += `</ol> 
                 </section>
                 <div>
-                    <button id="add-song" name="add-song" type="submit">Add Song</button>
+                    <button id="add-song" name="add-song" type="button">Add Song</button>
                 </div>
                 <div>
-                    <button type="submit">Save</button>
+                    <button id="save-playlist" type="button">Save</button>
                 </div>`;
 
 
@@ -126,7 +126,8 @@ function populateEditModal(playlist) {
     let addSongButton = document.getElementById("add-song");
     addSongButton.addEventListener("click", onAddSongClick(playlist));
 
-    enableEditPlaylist(playlist.playlistID);
+    let saveButton = document.getElementById("save-playlist");
+    saveButton.addEventListener("click", onSubmitEditPlaylist(playlist.playlistID), false);
 }
 
 function openEditModal(playlist) {
@@ -137,7 +138,8 @@ function openEditModal(playlist) {
 }
 
 function writeEditedPlaylistData(e, id) {
-    const form = e.target;
+    const form = e.target.closest('form');
+
     const entries = [...new FormData(form).entries()];
 
     let playlist = getPlaylist(id);
@@ -145,19 +147,17 @@ function writeEditedPlaylistData(e, id) {
     playlist.playlist_name = entries[0][1];
     playlist.playlist_creator = entries[1][1];
     playlist.playlist_art = entries[2][1];
-    console.log(entries);
 
     let songNum = 0;
     for (let i = 3; i < entries.length; i += 5) {
         let song;
         if (songNum > playlist.songs.length - 1) {
             playlist.songs.push({
-                songID: `${parseInt(playlist.songs[playlist.songs.length - 1].songID) + 1}`,
+                songID: parseInt(playlist.songs[playlist.songs.length - 1].songID) + 1,
                 title: "title",
             })
         }
         song = playlist.songs[songNum];
-        console.log(song, songNum, song.songID);
 
         song.title = entries[i][1];
         song.artist = entries[i + 1][1];
@@ -168,6 +168,7 @@ function writeEditedPlaylistData(e, id) {
 
     }
 }
+
 function onSubmitEditPlaylist(id) {
     return (e) => {
         console.log(e);
@@ -184,7 +185,6 @@ function onSubmitEditPlaylist(id) {
 function enableEditPlaylist(id) {
     const form = document.getElementById("edit-form");
 
-    form.addEventListener("submit", onSubmitEditPlaylist(id), false);
 }
 
 function openInfoModal(playlist) {
@@ -342,7 +342,7 @@ function filterCardsDynamicSearch(e) {
     }
 }
 
-function dynamicSearch() {
+function enableDynamicSearch() {
     document.getElementById("playlistSearch").addEventListener("input", filterCardsDynamicSearch);
 }
 
@@ -371,10 +371,40 @@ function onSortPlaylists(e) {
     displayPlaylistCards(playlists);
 }
 
-function sortPlaylists() {
+function sortPlaylistsButton() {
     const form = document.getElementById("sort-form");
 
     form.addEventListener("submit", onSortPlaylists, false);
+}
+
+function onAddPlaylist(e) {
+    playlists.push(
+        {
+            playlistID: Math.max(...playlists.map(pl => pl.playlistID)) + 1,
+            playlist_name: "",
+            playlist_creator: "",
+            playlist_art: "",
+            likeCount: 0,
+            songs: [{
+                songID: 0,
+                title: "",
+                artist: "",
+                album: "",
+                cover_art: "",
+                duration: "",
+            }],
+            liked: false,
+            display: true,
+            deleted: false,
+            dateAdded: new Date(),
+        }
+    );
+    openEditModal(playlists[playlists.length - 1]);
+}
+
+function addPlaylistButton() {
+    const button = document.getElementById("addPlaylist");
+    button.addEventListener("click", onAddPlaylist, false);
 }
 
 let playlists = JSON.parse(JSON.stringify(data.playlists));
@@ -388,5 +418,6 @@ for (let playlist of playlists) {
 
 console.log(playlists);
 displayPlaylistCards(playlists);
-dynamicSearch();
-sortPlaylists();
+enableDynamicSearch();
+sortPlaylistsButton();
+addPlaylistButton();

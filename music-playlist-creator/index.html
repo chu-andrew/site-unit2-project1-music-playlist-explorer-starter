@@ -21,11 +21,13 @@
     </header>
 
     <main>
-        <span style="display: flex; justify-content: center;">
+        <span style="display: flex; justify-content: space-around;">
             <input type="text" id="playlistSearch" class="playlist-search" placeholder="Search Playlists">
+            <button type="button" id="addPlaylist" class="top-button">Add Playlist</button>
+            <button type="button" id="featuredPage" class="top-button" onclick="window.location.href='featured.html'">Featured Today</button>
         </span>
 
-        <form id="sort-form" >
+        <form id="sort-form">
             <fieldset class="sort-form">
                 <div>
                     <input type="radio" id="likes" name="sort" value="likes" />
