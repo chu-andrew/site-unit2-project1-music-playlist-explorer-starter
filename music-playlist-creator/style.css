@@ -67,7 +67,8 @@ Example: Add borders, shadows, and hover effects. */
     padding: 2px;
 }
 
-.playlist-card-likes-button {
+.playlist-card-likes-button,
+.playlist-card-trash-button {
     background-color: transparent;
     border: 0px;
     margin-bottom: 2px;
@@ -76,6 +77,11 @@ Example: Add borders, shadows, and hover effects. */
 
 .playlist-card-likes-button:hover {
     color: red;
+    transform: scale(1.2);
+    transition: all .1s ease-in-out;
+}
+
+.playlist-card-trash-button:hover {
     transform: scale(1.2);
     transition: all .1s ease-in-out;
 }
@@ -93,9 +99,6 @@ Example: Add borders, shadows, and hover effects. */
     transition: all .1s ease-in-out;
 }
 
-/* TODO Style the modal overlay and content to create a centered pop-up effect when a playlist card is clicked.
-Example: Set the background of the overlay, style the content area, and add animations for opening the modal. */
-/* TODO modal needs semi-transparent bg */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -171,8 +174,6 @@ Example: Set the background of the overlay, style the content area, and add anim
     transition: all .1s ease-in-out;
 
 }
-
-/* TODO https://stackoverflow.com/questions/21998679/css-how-to-make-scrollable-list */
 
 .song-scroller {
     overflow: hidden;

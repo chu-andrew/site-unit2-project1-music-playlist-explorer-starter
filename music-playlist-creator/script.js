@@ -1,50 +1,53 @@
 
-function clickedPlaylistCard(e) {
-    let clickedPlaylist = e.currentTarget.id;
-
-    let playlist = null;
-    for (let pl of playlists) {
-        if (pl["playlistID"] == clickedPlaylist) {
-            playlist = pl
-            break;
+function getPlaylist(id) {
+    for (let playlist of playlists) {
+        if (playlist["playlistID"] == id) {
+            return playlist;
         }
     }
+    return null;
+}
+
+function clickedPlaylistCard(e) {
+    let playlist = getPlaylist(e.currentTarget.id);
 
     if (e.srcElement.classList.contains("heart-icon")) {
-        updateLikeCount(playlist);
+        updateLikes(playlist);
+        displayLikes(playlist);
+    }
+    else if (e.srcElement.classList.contains("trash-icon")) {
+        playlist.display = false;
+        playlist.deleted = true;
+        displayPlaylistCards(playlists);
     }
     else {
         openModal(playlist);
     }
 }
 
-let likeStatusMap = new Map();
-
-function initializeLikeStatusMap() {
-    for (let playlist of playlists) {
-        likeStatusMap.set(playlist["playlistID"], false);
+function updateLikes(playlist) {
+    // if previously liked, now unliked, and vice versa
+    if (playlist.liked) {
+        playlist.likeCount--;
+    } else {
+        playlist.likeCount++;
     }
+    playlist.liked = !playlist.liked;
 }
 
-function updateLikeCount(playlist) {
-    const id = playlist["playlistID"];
-    let liked = likeStatusMap.get(playlist["playlistID"]);
-    if (liked) {
-        playlists.find(item => item.playlistID === id).likeCount--;
-        likeStatusMap.set(id, false);
-    } else {
-        playlists.find(item => item.playlistID === id).likeCount++;
-        likeStatusMap.set(id, true);
-    }
+function displayLikes(playlist) {
+    if (!playlist.display) return;
 
+    let id = playlist.playlistID;
     const likeButton = document.getElementById(`playlist-card-likes-button-${id}`);
-    likeButton.classList.toggle("playlist-card-likes-button");
-    likeButton.classList.toggle("playlist-card-likes-button-active");
+    if (playlist.liked) {
+        likeButton.classList.replace("playlist-card-likes-button", "playlist-card-likes-button-active");
+    } else {
+        likeButton.classList.replace("playlist-card-likes-button-active", "playlist-card-likes-button");
+    }
 
     const likeCount = document.getElementById(`like-num-${id}`);
     likeCount.textContent = playlist["likeCount"];
-
-    console.log(playlists);
 }
 
 function openModal(playlist) {
@@ -59,16 +62,18 @@ function openModal(playlist) {
     modal.style.display = "block";
 }
 
-function populatePlaylistCards(playlists) {
+function displayPlaylistCards(playlists) {
     let cards = "";
     for (let playlist of playlists) {
-        cards += generatePlaylistCard(
-            playlist["playlistID"],
-            playlist["playlist_name"],
-            playlist["playlist_creator"],
-            playlist["playlist_art"],
-            playlist["likeCount"]
-        );
+        if (playlist.display) {
+            cards += generatePlaylistCard(
+                playlist["playlistID"],
+                playlist["playlist_name"],
+                playlist["playlist_creator"],
+                playlist["playlist_art"],
+                playlist["likeCount"]
+            );
+        }
     }
 
     let list = document.getElementById("playlist-cards-list");
@@ -78,6 +83,10 @@ function populatePlaylistCards(playlists) {
     let playlistCards = document.getElementsByClassName("playlist-card");
     for (let cardHTML of playlistCards) {
         cardHTML.addEventListener('click', clickedPlaylistCard);
+    }
+
+    for (let playlist of playlists) {
+        displayLikes(playlist);
     }
 
     return playlistCards;
@@ -90,10 +99,13 @@ function generatePlaylistCard(id, title, creator, imgSrc, likes) {
             <div class="playlist-info-group">
                 <h3 class="playlist-card-title">${title}</h3>
                 <h4 class="playlist-card-creator">${creator}</h4>
-                <div class="playlist-card-likes">
-                    <button id="playlist-card-likes-button-${id}" class="playlist-card-likes-button"><i
-                        class="fa-solid fa-heart fa-xl heart-icon"></i></button>
-                    <p id="like-num-${id}" class="like-num">${likes}</p>
+                <div style="display: flex; justify-content: space-between;">
+                    <div class="playlist-card-likes">
+                        <button id="playlist-card-likes-button-${id}" class="playlist-card-likes-button"><i
+                            class="fa-solid fa-heart fa-xl heart-icon"></i></button>
+                        <p id="like-num-${id}" class="like-num">${likes}</p>
+                    </div>
+                    <button id="playlist-card-del-${id}" class="playlist-card-trash-button"><i class="fa-solid fa-trash fa-xl trash-icon"></i></button> 
                 </div>
             </div>
         </article>`;
@@ -170,19 +182,18 @@ function filterCardsDynamicSearch(e) {
     const search = e.target.value.toLowerCase();
 
     let shown = 0;
-    for (let card of playlistCards) {
-        // let title = card["title"];
-        title = card.getElementsByClassName("playlist-card-title")[0]
-            .textContent.toLowerCase();
-        creator = card.getElementsByClassName("playlist-card-creator")[0]
-            .textContent.toLowerCase();
-        if (title.includes(search) || creator.includes(search)) {
-            card.style.display = "block";
+    for (let playlist of playlists) {
+        title = playlist.playlist_name.toLowerCase();
+        creator = playlist.playlist_creator.toLowerCase();
+        if ((title.includes(search) || creator.includes(search)) && !playlist.deleted) {
+            playlist.display = true;
             shown++;
         } else {
-            card.style.display = "none";
+            playlist.display = false;
         }
     }
+
+    displayPlaylistCards(playlists);
     if (shown === 0) {
         document.getElementById("no-search-results").style.display = "flex";
     } else {
@@ -194,48 +205,47 @@ function dynamicSearch() {
     document.getElementById("playlistSearch").addEventListener("input", filterCardsDynamicSearch);
 }
 
-function likeSort(playlists) {
-    pl = playlists[0];
-    console.log(playlists);
+function onSortPlaylists(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const data = new FormData(form);
+
+    let choice = "";
+    for (const entry of data) {
+        choice = entry[1];
+    }
+
+    switch (choice) {
+        case "likes":
+            playlists.sort((a, b) => b.likeCount - a.likeCount);
+            break;
+        case "title":
+            playlists.sort((a, b) => a.playlist_name.localeCompare(b.playlist_name));
+            break;
+        case "date":
+            playlists.sort((a, b) => a - b);
+            break;
+    }
+    displayPlaylistCards(playlists);
 }
 
 function sortPlaylists() {
     const form = document.getElementById("sort-form");
 
-    form.addEventListener(
-        "submit",
-        (e) => {
-            e.preventDefault();
-            const data = new FormData(form);
-            let choice = "";
-            for (const entry of data) {
-                choice = entry[1];
-            }
-            console.log(playlists[2]);
-            switch (choice) {
-                case "likes":
-                    playlists.sort((a, b) => b.likeCount - a.likeCount);
-                    break;
-                case "title":
-                    playlists.sort((a, b) => a.playlist_name.localeCompare(b.playlist_name));
-                    break;
-                case "date":
-                    break;
-            }
-            console.log(playlists[2]);
-            populatePlaylistCards(playlists);
-        },
-        false,
-    );
+    form.addEventListener("submit", onSortPlaylists, false);
 }
 
 let playlists = JSON.parse(JSON.stringify(data.playlists));
 for (let playlist of playlists) {
     playlist.liked = false;
     playlist.display = true;
+    playlist.deleted = false;
+    playlist.dateAdded = new Date();
 }
 
-var playlistCards = populatePlaylistCards(playlists);
-initializeLikeStatusMap();
+
+console.log(playlists);
+displayPlaylistCards(playlists);
 dynamicSearch();
 sortPlaylists();
