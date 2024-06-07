@@ -55,8 +55,39 @@ function displayLikes(playlist) {
     likeCount.textContent = playlist["likeCount"];
 }
 
+function onAddSongClick(playlist) {
+    return (e) => {
+        console.log(e);
+        e.preventDefault();
+
+        let songEditList = document.getElementById("song-edit-list");
+        songEditList.innerHTML += `
+        <li>
+        Song title: <input type="text" name="title"><br/> 
+        Artist: <input type="text" name="creator"><br/> 
+        Album: <input type="text" name="album"><br/> 
+        Song cover art URL: <input type="url" name="cover"><br/>
+        Song duration: <input type="text" name="duration"><br/>
+        </li>
+        <br/>
+    `
+        // writeEditedPlaylistData(e, playlist.playlistID);
+        // populateEditModal(playlist)
+    }
+}
+
+function songIsNull(song) {
+    let isNull = [
+        song["title"],
+        song["artist"],
+        song["album"],
+        song["cover_art"],
+        song["duration"]]
+        .every(x => x === null || x === '' || x === 0);
+    return isNull;
+}
+
 function populateEditModal(playlist) {
-    console.log(playlist);
     let formData = `
         <h2>Edit playlist</h2>
         Playlist title: <input type="text" name="title" value="${playlist.playlist_name}"><br/> 
@@ -64,39 +95,97 @@ function populateEditModal(playlist) {
         Playlist cover art URL: <input type="url" name="cover" value="${playlist.playlist_art}"><br/>
         <br />
         <section class="song-scroller">
-        <ol>
+        <ol id="song-edit-list">
     `
 
-    for (let song of playlist.songs) {
+    for (let song of playlist.songs.filter(song => !songIsNull(song))) {
         formData += `
         <li>
         Song title: <input type="text" name="title" value="${song.title}"><br/> 
         Artist: <input type="text" name="creator" value="${song.artist}"><br/> 
-        Album: <input type="text" name="creator" value="${song.album}"><br/> 
+        Album: <input type="text" name="album" value="${song.album}"><br/> 
         Song cover art URL: <input type="url" name="cover" value="${song.cover_art}"><br/>
-        Song duration: <input type="text" name="cover" value="${song.duration}"><br/>
+        Song duration: <input type="text" name="duration" value="${song.duration}"><br/>
         </li>
         <br/>
         `
     }
-    formData += "</ol> </section>";
+    formData += `</ol> 
+                </section>
+                <div>
+                    <button id="add-song" name="add-song" type="submit">Add Song</button>
+                </div>
+                <div>
+                    <button type="submit">Save</button>
+                </div>`;
+
 
     let form = document.getElementById("edit-form");
     form.innerHTML = formData;
+
+    let addSongButton = document.getElementById("add-song");
+    addSongButton.addEventListener("click", onAddSongClick(playlist));
+
+    enableEditPlaylist(playlist.playlistID);
 }
 
 function openEditModal(playlist) {
     populateEditModal(playlist);
 
     const modal = document.getElementById("edit-modal");
-    // modalCloseButton.onclick = function () {
-    // modal.style.display = "none";
-    // }
-
     modal.style.display = "block";
 }
 
+function writeEditedPlaylistData(e, id) {
+    const form = e.target;
+    const entries = [...new FormData(form).entries()];
 
+    let playlist = getPlaylist(id);
+
+    playlist.playlist_name = entries[0][1];
+    playlist.playlist_creator = entries[1][1];
+    playlist.playlist_art = entries[2][1];
+    console.log(entries);
+
+    let songNum = 0;
+    for (let i = 3; i < entries.length; i += 5) {
+        let song;
+        if (songNum > playlist.songs.length - 1) {
+            playlist.songs.push({
+                songID: `${parseInt(playlist.songs[playlist.songs.length - 1].songID) + 1}`,
+                title: "title",
+            })
+        }
+        song = playlist.songs[songNum];
+        console.log(song, songNum, song.songID);
+
+        song.title = entries[i][1];
+        song.artist = entries[i + 1][1];
+        song.album = entries[i + 2][1];
+        song.cover_art = entries[i + 3][1];
+        song.duration = entries[i + 4][1];
+        songNum++;
+
+    }
+}
+function onSubmitEditPlaylist(id) {
+    return (e) => {
+        console.log(e);
+        e.preventDefault();
+
+        const modal = document.getElementById("edit-modal");
+        modal.style.display = "none";
+        writeEditedPlaylistData(e, id);
+
+        displayPlaylistCards(playlists);
+    }
+}
+
+function enableEditPlaylist(id) {
+    const form = document.getElementById("edit-form");
+
+    form.addEventListener("submit", onSubmitEditPlaylist(id), false);
+}
 
 function openInfoModal(playlist) {
     populateInfoModal(playlist);
@@ -174,16 +263,19 @@ function populateInfoModal(playlist) {
 
     cards = "";
     for (let song of playlist["songs"]) {
-        cards += generateSongCard(
-            song["songID"],
-            song["title"],
-            song["artist"],
-            song["album"],
-            song["cover_art"],
-            song["duration"]
-        );
-    }
 
+
+        if (!songIsNull(song)) {
+            cards += generateSongCard(
+                song["songID"],
+                song["title"],
+                song["artist"],
+                song["album"],
+                song["cover_art"],
+                song["duration"]
+            );
+        }
+    }
     let list = document.getElementById("modal-song-list");
     list.innerHTML = cards;
 }
