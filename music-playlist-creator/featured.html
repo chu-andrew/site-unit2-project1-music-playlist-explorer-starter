@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Music Playlist Explorer</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/41c14df133.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <header>
+        <!-- Your header content here -->
+        <h1 style="display: flex; align-items: center;">
+            <i class="fa-solid fa-infinity fa-2x"></i> &nbsp;Music Playlist Explorer
+        </h1>
+    </header>
+
+    <main>
+        <!-- TODO design wireframe -->
+        <section class="featured-holder">
+            <section class="featured-info">
+                <h2 class="featured-header">
+                    Featured Today
+                </h2>
+                <article>
+                    <div style="height: 25rem;">
+                        <img id="featured-cover" class="featured-cover" src="https://placehold.co/400x400">
+                    </div>
+                    <h2 id="featured-title" class="featured-title">${title}</h2>
+                    <h3 id="featured-creator" class="featured-creator">${creator}</h3>
+                </article>
+            </section>
+            <section id="featured-song-scroller" class="song-scroller">
+                <section id="featured-song-list" class="song-list">
+                    <p>hello</p>
+                    <!-- Song cards created dynamically from data [script.js] -->
+                </section>
+            </section>
+            </div>
+    </main>
+
+    <footer>
+        <!-- Your footer content here -->
+        <h3 style="display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-infinity fa-2x"></i> &nbsp;Music Playlist Explorer
+        </h3>
+    </footer>
+    <script src="data/data.js"></script>
+    <script src="script-featured.js"></script>
+</body>
+
+</html>

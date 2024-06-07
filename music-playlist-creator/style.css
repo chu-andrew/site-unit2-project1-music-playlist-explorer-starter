@@ -1,5 +1,5 @@
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     margin: 0;
     padding: 0;
     background-color: powderblue;
@@ -11,6 +11,11 @@ header {
     margin-left: 25px;
 }
 
+footer {
+    flex-direction: row;
+    align-items: center;
+}
+
 main {
     padding: 15px;
 }
@@ -18,6 +23,7 @@ main {
 .playlist-cards-list {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: row;
 }
 
 /* TODO Style the playlist cards to make them visually distinct and appealing.
@@ -70,6 +76,19 @@ Example: Add borders, shadows, and hover effects. */
 
 .playlist-card-likes-button:hover {
     color: red;
+    transform: scale(1.2);
+    transition: all .1s ease-in-out;
+}
+
+.playlist-card-likes-button-active {
+    background-color: transparent;
+    border: 0px;
+    margin-bottom: 2px;
+    padding: 0px 5px 0px 0px;
+    color: red;
+}
+
+.playlist-card-likes-button-active:hover {
     transform: scale(1.2);
     transition: all .1s ease-in-out;
 }
@@ -131,24 +150,26 @@ Example: Set the background of the overlay, style the content area, and add anim
     flex-grow: 1;
 }
 
-.playlist-modal-title {
-    margin: 4px 20px;
-}
-
+.playlist-modal-title,
 .playlist-modal-creator {
     margin: 4px 20px;
 }
 
 .shuffle-button {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: medium;
     margin: 4px 20px;
+    padding: 10px;
     background-color: mediumseagreen;
     border: 1px solid rgba(27, 31, 35, .15);
-    border-radius: 6px;
-    box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+    border-radius: 15px;
 }
 
 .shuffle-button:hover {
     background-color: forestgreen;
+    transform: scale(1.05);
+    transition: all .1s ease-in-out;
+
 }
 
 /* TODO https://stackoverflow.com/questions/21998679/css-how-to-make-scrollable-list */
@@ -162,8 +183,8 @@ Example: Set the background of the overlay, style the content area, and add anim
 .song-list {
     margin: 20px auto;
     height: 100%;
+    /* transition: transform 2s ease; */
 }
-
 
 .song-info {
     display: flex;
@@ -202,4 +223,33 @@ Example: Set the background of the overlay, style the content area, and add anim
 
 .song-length {
     margin: auto 10px;
+}
+
+.featured-holder {
+    display: flex;
+    justify-content: space-between;
+    margin: auto 50px;
+}
+
+.featured-header {
+    font-size: x-large;
+}
+
+.featured-cover {
+    height: 100%;
+    width: 100%;
+    border-radius: 20px;
+    margin-bottom: 18px;
+}
+
+.featured-title,
+.featured-creator {
+    margin: 4px auto;
+}
+
+#featured-song-scroller {
+    margin-top: 50px;
+    margin-left: 50px;
+    height: 100%;
+    width: 50%;
 }
