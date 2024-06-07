@@ -27,6 +27,8 @@ main {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
+    justify-content: center;
+    margin: auto;
 }
 
 /* TODO Style the playlist cards to make them visually distinct and appealing.
@@ -34,7 +36,7 @@ Example: Add borders, shadows, and hover effects. */
 
 .playlist-card {
     width: 200px;
-    height: 50%;
+    height: 20rem;
     margin: 24px 20px;
     padding: 22px;
     border-radius: 15px;
@@ -51,8 +53,12 @@ Example: Add borders, shadows, and hover effects. */
     border-radius: 12px;
 }
 
-.playlist-card-info-group {
+.playlist-info-group {
+    height: 40%;
     margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .playlist-card-title {
@@ -112,7 +118,6 @@ Example: Add borders, shadows, and hover effects. */
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
-
 }
 
 .modal-content {
@@ -161,7 +166,8 @@ Example: Add borders, shadows, and hover effects. */
     margin: 4px 20px;
 }
 
-.shuffle-button {
+.shuffle-button,
+.norm-button {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: medium;
     margin: 4px 20px;
@@ -171,7 +177,8 @@ Example: Add borders, shadows, and hover effects. */
     border-radius: 15px;
 }
 
-.shuffle-button:hover {
+.shuffle-button:hover,
+.norm-button:hover {
     background-color: forestgreen;
     transform: scale(1.05);
     transition: all .1s ease-in-out;
@@ -257,12 +264,17 @@ Example: Add borders, shadows, and hover effects. */
     width: 50%;
 }
 
+#edit-song-scroller {
+    height: 20rem;
+}
+
 .playlist-search {
     background: #fff;
-    padding: 12px 16px; 
+    padding: 12px 16px;
     border-radius: 8px;
 }
 
 .sort-form {
     border-radius: 10px;
+    margin: 20px;
 }

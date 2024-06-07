@@ -56,8 +56,10 @@ function generatePlaylistCard(id, title, creator, imgSrc, likes) {
         <article id=${id} class="playlist-card">
             <img class="playlist-card-cover" src=${imgSrc}>
             <div class="playlist-info-group">
-                <h3 class="playlist-card-title">${title}</h3>
-                <h4 class="playlist-card-creator">${creator}</h4>
+                <div>
+                    <h3 class="playlist-card-title">${title}</h3>
+                    <h4 class="playlist-card-creator">${creator}</h4>
+                </div>
                 <div style="display: flex; justify-content: space-between;">
                     <div class="playlist-card-likes">
                         <button id="playlist-card-likes-button-${id}" class="playlist-card-likes-button"><i
@@ -149,7 +151,7 @@ function populateEditModal(playlist) {
         Playlist creator: <input type="text" name="creator" value="${playlist.playlist_creator}"><br/> 
         Playlist cover art URL: <input type="url" name="cover" value="${playlist.playlist_art}"><br/>
         <br />
-        <section class="song-scroller">
+        <section id="edit-song-scroller" class="song-scroller">
         <ol id="song-edit-list">
     `
 
@@ -168,11 +170,12 @@ function populateEditModal(playlist) {
     formData += `</ol> 
                 </section>
                 <div>
-                    <button id="add-song" name="add-song" type="button">Add Song</button>
+                    <button id="add-song" name="add-song" type="button" class="norm-button">Add Song</button>
                 </div>
                 <div>
-                    <button id="save-playlist" type="button">Save</button>
-                </div>`;
+                    <button id="save-playlist" type="button" class="norm-button">Save</button>
+                </div>
+                `;
 
 
     let form = document.getElementById("edit-form");

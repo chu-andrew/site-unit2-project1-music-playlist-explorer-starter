@@ -14,7 +14,6 @@
 
 <body>
     <header>
-        <!-- Your header content here -->
         <h1 style="display: flex; align-items: center;">
             <i class="fa-solid fa-infinity fa-2x"></i> &nbsp;Music Playlist Explorer
         </h1>
@@ -23,8 +22,9 @@
     <main>
         <span style="display: flex; justify-content: space-around;">
             <input type="text" id="playlistSearch" class="playlist-search" placeholder="Search Playlists">
-            <button type="button" id="addPlaylist" class="top-button">Add Playlist</button>
-            <button type="button" id="featuredPage" class="top-button" onclick="window.location.href='featured.html'">Featured Today</button>
+            <button type="button" id="addPlaylist" class="norm-button">Add Playlist</button>
+            <button type="button" id="featuredPage" class="norm-button"
+                onclick="window.location.href='featured.html'">Featured Today</button>
         </span>
 
         <form id="sort-form">
@@ -42,7 +42,7 @@
                     <label for="date">Date Added</label>
                 </div>
                 <div>
-                    <button type="submit">Submit</button>
+                    <button type="submit" class="norm-button">Submit</button>
                 </div>
             </fieldset>
         </form>
@@ -71,17 +71,18 @@
     <div id="edit-modal" class="modal-overlay">
         <div class="modal-content">
             <form id="edit-form">
-
+                <!-- Editing content created dynamically from data [script.js] -->
             </form>
         </div>
     </div>
 
     <footer>
-        <!-- Your footer content here -->
-        <!-- TODO footer styling -->
-        <h3 style="display: flex; align-items: center; justify-content: center;">
-            <i class="fa-solid fa-infinity fa-2x"></i> &nbsp;Music Playlist Explorer
-        </h3>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <h3 style="display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-infinity fa-2x"></i> &nbsp;Music Playlist Explorer
+            </h3>
+            <h5>Created by andrewchu</h5>
+        </div>
     </footer>
     <script src="data/data.js"></script>
     <script src="script.js"></script>
