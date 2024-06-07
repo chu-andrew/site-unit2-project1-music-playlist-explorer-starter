@@ -18,10 +18,15 @@ function clickedPlaylistCard(e) {
     else if (e.srcElement.classList.contains("trash-icon")) {
         playlist.display = false;
         playlist.deleted = true;
+        delete playlist;
+
         displayPlaylistCards(playlists);
     }
+    else if (e.srcElement.classList.contains("pencil-icon")) {
+        openEditModal(playlist);
+    }
     else {
-        openModal(playlist);
+        openInfoModal(playlist);
     }
 }
 
@@ -50,8 +55,51 @@ function displayLikes(playlist) {
     likeCount.textContent = playlist["likeCount"];
 }
 
-function openModal(playlist) {
-    populateModal(playlist);
+function populateEditModal(playlist) {
+    console.log(playlist);
+    let formData = `
+        <h2>Edit playlist</h2>
+        Playlist title: <input type="text" name="title" value="${playlist.playlist_name}"><br/> 
+        Playlist creator: <input type="text" name="creator" value="${playlist.playlist_creator}"><br/> 
+        Playlist cover art URL: <input type="url" name="cover" value="${playlist.playlist_art}"><br/>
+        <br />
+        <section class="song-scroller">
+        <ol>
+    `
+
+    for (let song of playlist.songs) {
+        formData += `
+        <li>
+        Song title: <input type="text" name="title" value="${song.title}"><br/> 
+        Artist: <input type="text" name="creator" value="${song.artist}"><br/> 
+        Album: <input type="text" name="creator" value="${song.album}"><br/> 
+        Song cover art URL: <input type="url" name="cover" value="${song.cover_art}"><br/>
+        Song duration: <input type="text" name="cover" value="${song.duration}"><br/>
+        </li>
+        <br/>
+        `
+    }
+    formData += "</ol> </section>";
+
+    let form = document.getElementById("edit-form");
+    form.innerHTML = formData;
+}
+
+function openEditModal(playlist) {
+    populateEditModal(playlist);
+
+    const modal = document.getElementById("edit-modal");
+    // modalCloseButton.onclick = function () {
+    // modal.style.display = "none";
+    // }
+
+    modal.style.display = "block";
+}
+
+
+
+function openInfoModal(playlist) {
+    populateInfoModal(playlist);
 
     const modal = document.getElementById("info-modal");
     const modalCloseButton = document.getElementsByClassName("close")[0];
@@ -105,14 +153,15 @@ function generatePlaylistCard(id, title, creator, imgSrc, likes) {
                             class="fa-solid fa-heart fa-xl heart-icon"></i></button>
                         <p id="like-num-${id}" class="like-num">${likes}</p>
                     </div>
-                    <button id="playlist-card-del-${id}" class="playlist-card-trash-button"><i class="fa-solid fa-trash fa-xl trash-icon"></i></button> 
+                    <button id="playlist-card-edit-${id}" class="playlist-card-misc-button"><i class="fa-solid fa-pencil fa-xl pencil-icon"></i></button> 
+                    <button id="playlist-card-del-${id}" class="playlist-card-misc-button"><i class="fa-solid fa-trash fa-xl trash-icon"></i></button> 
                 </div>
             </div>
         </article>`;
     return card;
 }
 
-function populateModal(playlist) {
+function populateInfoModal(playlist) {
     let modalInfo = document.getElementById("playlist-modal-info");
     modalInfo.innerHTML = generateModalInfo(
         playlist["playlist_name"],

@@ -8,12 +8,15 @@ body {
 header {
     flex-direction: row;
     align-items: center;
-    margin-left: 25px;
+    padding: 25px;
+    background-color: silver;
 }
 
 footer {
     flex-direction: row;
     align-items: center;
+    padding: 25px;
+    background-color: silver;
 }
 
 main {
@@ -68,7 +71,7 @@ Example: Add borders, shadows, and hover effects. */
 }
 
 .playlist-card-likes-button,
-.playlist-card-trash-button {
+.playlist-card-misc-button {
     background-color: transparent;
     border: 0px;
     margin-bottom: 2px;
@@ -81,7 +84,7 @@ Example: Add borders, shadows, and hover effects. */
     transition: all .1s ease-in-out;
 }
 
-.playlist-card-trash-button:hover {
+.playlist-card-misc-button:hover {
     transform: scale(1.2);
     transition: all .1s ease-in-out;
 }
@@ -184,7 +187,6 @@ Example: Add borders, shadows, and hover effects. */
 .song-list {
     margin: 20px auto;
     height: 100%;
-    /* transition: transform 2s ease; */
 }
 
 .song-info {

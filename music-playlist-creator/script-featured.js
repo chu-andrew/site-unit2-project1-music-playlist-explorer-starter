@@ -48,4 +48,4 @@ function populateFeaturedSongList(playlist) {
 }
 
 let playlists = JSON.parse(JSON.stringify(data.playlists));
-populateFeatured(playlists[0]);
+populateFeatured(playlists[Math.floor(Math.random() * playlists.length)]);
