@@ -1,4 +1,5 @@
 
+// helper functions
 function getPlaylist(id) {
     for (let playlist of playlists) {
         if (playlist["playlistID"] == id) {
@@ -6,6 +7,69 @@ function getPlaylist(id) {
         }
     }
     return null;
+}
+
+function songIsNull(song) {
+    let isNull = [
+        song["title"],
+        song["artist"],
+        song["album"],
+        song["cover_art"],
+        song["duration"]]
+        .every(x => x === null || x === '' || x === 0);
+    return isNull;
+}
+
+// playlist cards
+function displayPlaylistCards(playlists) {
+    let cards = "";
+    for (let playlist of playlists) {
+        if (playlist.display) {
+            cards += generatePlaylistCard(
+                playlist["playlistID"],
+                playlist["playlist_name"],
+                playlist["playlist_creator"],
+                playlist["playlist_art"],
+                playlist["likeCount"]
+            );
+        }
+    }
+
+    let list = document.getElementById("playlist-cards-list");
+    list.innerHTML = cards;
+
+    // add event listener to created cards
+    let playlistCards = document.getElementsByClassName("playlist-card");
+    for (let cardHTML of playlistCards) {
+        cardHTML.addEventListener('click', clickedPlaylistCard);
+    }
+
+    for (let playlist of playlists) {
+        displayLikes(playlist);
+    }
+
+    return playlistCards;
+}
+
+function generatePlaylistCard(id, title, creator, imgSrc, likes) {
+    let card = `
+        <article id=${id} class="playlist-card">
+            <img class="playlist-card-cover" src=${imgSrc}>
+            <div class="playlist-info-group">
+                <h3 class="playlist-card-title">${title}</h3>
+                <h4 class="playlist-card-creator">${creator}</h4>
+                <div style="display: flex; justify-content: space-between;">
+                    <div class="playlist-card-likes">
+                        <button id="playlist-card-likes-button-${id}" class="playlist-card-likes-button"><i
+                            class="fa-solid fa-heart fa-xl heart-icon"></i></button>
+                        <p id="like-num-${id}" class="like-num">${likes}</p>
+                    </div>
+                    <button id="playlist-card-edit-${id}" class="playlist-card-misc-button"><i class="fa-solid fa-pencil fa-xl pencil-icon"></i></button> 
+                    <button id="playlist-card-del-${id}" class="playlist-card-misc-button"><i class="fa-solid fa-trash fa-xl trash-icon"></i></button> 
+                </div>
+            </div>
+        </article>`;
+    return card;
 }
 
 function clickedPlaylistCard(e) {
@@ -30,6 +94,7 @@ function clickedPlaylistCard(e) {
     }
 }
 
+// like playlist
 function updateLikes(playlist) {
     // if previously liked, now unliked, and vice versa
     if (playlist.liked) {
@@ -55,12 +120,12 @@ function displayLikes(playlist) {
     likeCount.textContent = playlist["likeCount"];
 }
 
+
 function onAddSongClick(playlist) {
     return (e) => {
         e.preventDefault();
         writeEditedPlaylistData(e, playlist.playlistID);
         populateEditModal(playlist)
-        console.log(playlist);
 
         let songEditList = document.getElementById("song-edit-list");
         songEditList.innerHTML += `
@@ -76,17 +141,7 @@ function onAddSongClick(playlist) {
     }
 }
 
-function songIsNull(song) {
-    let isNull = [
-        song["title"],
-        song["artist"],
-        song["album"],
-        song["cover_art"],
-        song["duration"]]
-        .every(x => x === null || x === '' || x === 0);
-    return isNull;
-}
-
+// edit playlist
 function populateEditModal(playlist) {
     let formData = `
         <h2>Edit playlist</h2>
@@ -171,7 +226,6 @@ function writeEditedPlaylistData(e, id) {
 
 function onSubmitEditPlaylist(id) {
     return (e) => {
-        console.log(e);
         e.preventDefault();
 
         const modal = document.getElementById("edit-modal");
@@ -182,11 +236,7 @@ function onSubmitEditPlaylist(id) {
     }
 }
 
-function enableEditPlaylist(id) {
-    const form = document.getElementById("edit-form");
-
-}
-
+// info modal
 function openInfoModal(playlist) {
     populateInfoModal(playlist);
 
@@ -197,57 +247,6 @@ function openInfoModal(playlist) {
     }
 
     modal.style.display = "block";
-}
-
-function displayPlaylistCards(playlists) {
-    let cards = "";
-    for (let playlist of playlists) {
-        if (playlist.display) {
-            cards += generatePlaylistCard(
-                playlist["playlistID"],
-                playlist["playlist_name"],
-                playlist["playlist_creator"],
-                playlist["playlist_art"],
-                playlist["likeCount"]
-            );
-        }
-    }
-
-    let list = document.getElementById("playlist-cards-list");
-    list.innerHTML = cards;
-
-    // add event listener to created cards
-    let playlistCards = document.getElementsByClassName("playlist-card");
-    for (let cardHTML of playlistCards) {
-        cardHTML.addEventListener('click', clickedPlaylistCard);
-    }
-
-    for (let playlist of playlists) {
-        displayLikes(playlist);
-    }
-
-    return playlistCards;
-}
-
-function generatePlaylistCard(id, title, creator, imgSrc, likes) {
-    let card = `
-        <article id=${id} class="playlist-card">
-            <img class="playlist-card-cover" src=${imgSrc}>
-            <div class="playlist-info-group">
-                <h3 class="playlist-card-title">${title}</h3>
-                <h4 class="playlist-card-creator">${creator}</h4>
-                <div style="display: flex; justify-content: space-between;">
-                    <div class="playlist-card-likes">
-                        <button id="playlist-card-likes-button-${id}" class="playlist-card-likes-button"><i
-                            class="fa-solid fa-heart fa-xl heart-icon"></i></button>
-                        <p id="like-num-${id}" class="like-num">${likes}</p>
-                    </div>
-                    <button id="playlist-card-edit-${id}" class="playlist-card-misc-button"><i class="fa-solid fa-pencil fa-xl pencil-icon"></i></button> 
-                    <button id="playlist-card-del-${id}" class="playlist-card-misc-button"><i class="fa-solid fa-trash fa-xl trash-icon"></i></button> 
-                </div>
-            </div>
-        </article>`;
-    return card;
 }
 
 function populateInfoModal(playlist) {
@@ -312,6 +311,7 @@ function generateSongCard(id, title, creator, album, imgSrc, duration) {
     return card;
 }
 
+// shuffle playlist
 function shufflePlaylist() {
     const songList = document.getElementById("modal-song-list");
     for (let i = songList.children.length; i >= 0; i--) {
@@ -319,6 +319,7 @@ function shufflePlaylist() {
     }
 }
 
+// search playlists
 function filterCardsDynamicSearch(e) {
     const search = e.target.value.toLowerCase();
 
@@ -346,6 +347,7 @@ function enableDynamicSearch() {
     document.getElementById("playlistSearch").addEventListener("input", filterCardsDynamicSearch);
 }
 
+// sort playlists
 function onSortPlaylists(e) {
     e.preventDefault();
 
@@ -377,6 +379,7 @@ function sortPlaylistsButton() {
     form.addEventListener("submit", onSortPlaylists, false);
 }
 
+// add playlist
 function onAddPlaylist(e) {
     playlists.push(
         {
@@ -407,6 +410,7 @@ function addPlaylistButton() {
     button.addEventListener("click", onAddPlaylist, false);
 }
 
+// initialize
 let playlists = JSON.parse(JSON.stringify(data.playlists));
 for (let playlist of playlists) {
     playlist.liked = false;
@@ -415,8 +419,6 @@ for (let playlist of playlists) {
     playlist.dateAdded = new Date();
 }
 
-
-console.log(playlists);
 displayPlaylistCards(playlists);
 enableDynamicSearch();
 sortPlaylistsButton();
