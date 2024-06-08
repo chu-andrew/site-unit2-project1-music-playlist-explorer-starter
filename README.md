@@ -48,9 +48,6 @@ Estimated time spent: **19** hours spent in total
   - [x] Implement a dropdown or button options that allow users to sort the playlist by name, number of likes, or date added.
 
 ### Walkthrough Video
-
-`TODO://` Add the embedded URL code to your animated app walkthrough below, `ADD_EMBEDDED_CODE_HERE`. Make sure the video actually renders and is playable when viewing this README. (🚫 Remove this paragraph after adding walkthrough video)
-
 ![Feature Demo](https://github.com/chu-andrew/site-unit2-project1-music-playlist-explorer-starter/blob/f6bebfb9f35e6e25eb94e6caebecd79902305595/demo.gif)
 
 ### Reflection
